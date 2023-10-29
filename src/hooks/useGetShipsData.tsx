@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ApiResponse } from '../shared/types';
 import { Vehicle } from '../shared/types';
 
 const useGetShipsData = () => {
     const [data, setData] = useState<Vehicle[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
     const apiUrl = 'https://vortex.korabli.su/api/graphql/glossary/';
 
     // query with data which are needed
@@ -54,12 +51,9 @@ const useGetShipsData = () => {
         const fetchData = async () => {
             try {
                 const response = await axios(requestOptions);
-
-                console.log(response.data.data.vehicles);
-
                 setData(response.data.data.vehicles);
             } catch (err) {
-                setError('Error');
+                console.error('Error  ' + err);
             } finally {
                 setLoading(false);
             }
@@ -68,7 +62,7 @@ const useGetShipsData = () => {
         fetchData();
     }, []);
 
-    return data;
+    return [data, loading];
 };
 
 export default useGetShipsData;

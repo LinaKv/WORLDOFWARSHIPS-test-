@@ -1,18 +1,16 @@
 import React from 'react';
 import { Table, ConfigProvider } from 'antd';
-
 import type { ColumnsType, TableProps } from 'antd/es/table';
-import useGetShipsData from '../hooks/fetchShipsData';
+import useGetShipsData from '../hooks/useGetShipsData';
 import { Vehicle } from '../shared/types';
 import { Uniq } from '../shared/types';
-
-const onChange: TableProps<Vehicle>['onChange'] = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
-};
+import Loading from './Loading';
 
 function tableForShips() {
     // get data from server
-    const dataShips = useGetShipsData();
+    const answ = useGetShipsData();
+    const dataShips = answ[0] as Vehicle[];
+    const loading = answ[1] as boolean;
 
     // create object with uniq key
     const uniqData: Uniq = dataShips?.reduce(
@@ -52,11 +50,6 @@ function tableForShips() {
     // settings to the table
     const columns: ColumnsType<Vehicle> = [
         {
-            title: 'Title',
-            dataIndex: 'title',
-            width: '20%',
-        },
-        {
             title: 'Icons',
             dataIndex: 'icons',
             render: (icon) => (
@@ -65,6 +58,12 @@ function tableForShips() {
                 </div>
             ),
         },
+        {
+            title: 'Title',
+            dataIndex: 'title',
+            width: '20%',
+        },
+
         {
             title: 'Type',
             dataIndex: 'type',
@@ -100,7 +99,9 @@ function tableForShips() {
         },
     ];
 
-    return (
+    return loading ? (
+        <Loading />
+    ) : (
         <ConfigProvider
             theme={{
                 components: {
@@ -119,20 +120,20 @@ function tableForShips() {
             }}
         >
             <Table
-                scroll={{ y: 500 }}
+                loading={false}
+                scroll={{ y: 650 }}
                 columns={columns}
                 pagination={{
-                    defaultPageSize: 5,
-                    pageSizeOptions: [5],
+                    defaultPageSize: 10,
                     position: ['bottomCenter'],
                     showSizeChanger: false,
                 }}
                 dataSource={dataShips.map((ship) => ({ ...ship, key: ship.title }))}
-                onChange={onChange}
                 className="tableShips"
                 style={{
                     position: 'static',
                     width: 700,
+                    height: 700,
                 }}
                 expandable={{
                     expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,

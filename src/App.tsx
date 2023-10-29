@@ -1,4 +1,3 @@
-import './App.css';
 import TableForShips from './component/Table';
 
 function App() {

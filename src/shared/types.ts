@@ -1,7 +1,3 @@
-export interface DataType {
-    vehicles: Vehicle[];
-}
-
 interface Icons {
     small: string;
     medium: string;
@@ -33,10 +29,6 @@ export interface Vehicle {
     level: number;
     type: Type;
     nation: Nation;
-}
-
-export interface ApiResponse {
-    vehicles: Vehicle[];
 }
 
 export interface Uniq {
